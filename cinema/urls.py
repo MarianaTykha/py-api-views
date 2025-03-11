@@ -1,12 +1,15 @@
 from django.urls import path
-from . import views
+from cinema import views
 
 app_name = "cinema"
 
 urlpatterns = [
-    path('movies/', views.MovieViewSet.as_view({'get': 'list', 'post': 'create'}), name='movie-list'),
-    path('movies/<int:pk>/', views.MovieViewSet.as_view({'get': 'retrieve', 'put': 'update', 'delete': 'destroy'}), name='movie-detail'),
-    path('genres/', views.GenreViewSet.as_view({'get': 'list', 'post': 'create'}), name='genre-list'),
-    path('actors/', views.ActorViewSet.as_view({'get': 'list', 'post': 'create'}), name='actor-list'),
-    path('cinema_halls/', views.CinemaHallViewSet.as_view({'get': 'list', 'post': 'create'}), name='cinema-hall-list'),
+    path("genres/", views.GenreListCreateView.as_view(), name="genre-list-create"),
+    path("genres/<int:pk>/", views.GenreDetailView.as_view(), name="genre-detail"),
+    path("actors/", views.ActorListCreateView.as_view(), name="actor-list-create"),
+    path("actors/<int:pk>/", views.ActorDetailView.as_view(), name="actor-detail"),
+    path("cinema-halls/", views.CinemaHallListCreateView.as_view(), name="cinema-hall-list-create"),
+    path("cinema-halls/<int:pk>/", views.CinemaHallDetailView.as_view(), name="cinema-hall-detail"),
+    path("movies/", views.MovieListCreateView.as_view(), name="movie-list-create"),
+    path("movies/<int:pk>/", views.MovieDetailView.as_view(), name="movie-detail"),
 ]

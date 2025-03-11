@@ -1,41 +1,66 @@
-from rest_framework import viewsets
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.decorators import action
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.filters import SearchFilter
 from cinema.models import Genre, Actor, CinemaHall, Movie
-from cinema.serializers import GenreSerializer, ActorSerializer, CinemaHallSerializer, MovieSerializer
+from cinema.serializers import (
+    GenreSerializer,
+    ActorSerializer,
+    CinemaHallSerializer,
+    MovieSerializer,
+)
 
 
-class GenreViewSet(viewsets.ModelViewSet):
+class GenreListCreateView(generics.ListCreateAPIView):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [SearchFilter]
+    search_fields = ["name"]
 
 
-class ActorViewSet(viewsets.ModelViewSet):
+class GenreDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Genre.objects.all()
+    serializer_class = GenreSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class ActorListCreateView(generics.ListCreateAPIView):
     queryset = Actor.objects.all()
     serializer_class = ActorSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [SearchFilter]
+    search_fields = ["name"]
 
 
-class CinemaHallViewSet(viewsets.ModelViewSet):
+class ActorDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Actor.objects.all()
+    serializer_class = ActorSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class CinemaHallListCreateView(generics.ListCreateAPIView):
     queryset = CinemaHall.objects.all()
     serializer_class = CinemaHallSerializer
+    permission_classes = [IsAuthenticated]
 
 
-class MovieViewSet(viewsets.ModelViewSet):
+class CinemaHallDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = CinemaHall.objects.all()
+    serializer_class = CinemaHallSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class MovieListCreateView(generics.ListCreateAPIView):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [SearchFilter]
+    search_fields = ["title"]
+    ordering_fields = ["title", "release_date"]
+    ordering = ["release_date"]
 
-    @action(detail=True, methods=['put', 'patch'])
-    def update_movie(self, request, pk=None):
-        movie = self.get_object()
-        serializer = MovieSerializer(movie, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=True, methods=['delete'])
-    def delete_movie(self, request, pk=None):
-        movie = self.get_object()
-        movie.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+class MovieDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Movie.objects.all()
+    serializer_class = MovieSerializer
+    permission_classes = [IsAuthenticated]
